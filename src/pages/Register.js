@@ -57,7 +57,7 @@ class RegisterPage extends Component {
 					{this.state.errors.password && <div>Error: Password  {this.state.errors.password[0]}</div>}
 					<button onSubmit={this.onSubmit}>Register</button>
 				</form>
-				{this.state.registerSuccess && <Redirect to="#" />}
+				{this.state.registerSuccess && <Redirect to="/" />}
 			</main>
 		)
 	}
@@ -72,7 +72,7 @@ class RegisterPage extends Component {
 
 	onSubmit = (e) => {
 		e.preventDefault()
-
+		console.log(JSON.stringify(this.state.form));
 		this.auth.register(this.state.form)
 		.then(json => {
 			console.log("Got to second then:", json)
