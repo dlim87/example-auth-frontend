@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import { Redirect, Link } from 'react-router-dom'
+// import { Redirect, Link } from 'react-router-dom'
 
 import AuthService from '../services'
 
@@ -8,85 +8,76 @@ class Landing extends Component {
     super(props)
     this.auth = new AuthService()
     this.state={
-      loggedoutsuccess: false,
-      formsubmittry:false,
-      formsubmitsuccess: false,
+      submitsuccess: false,
       errors: "",
-      form:{
+      user:{
         email:"test@example.com",
         password: 123134
       }
     }
   }
-  logout(){
+  logout=()=>{
     console.log('click!');
     this.auth.logout()
-    this.setState({loggedoutsuccess:true})
-  }onChange = (e) => {
-    let { form } = this.state
+    this.setState({submitsuccess:true})
+  }
 
-		form[e.target.name] = e.target.value
+  onChange = (e) => {
+    let { user } = this.state
 
-		this.setState({ form })
+		user[e.target.name] = e.target.value
+    console.log(e.target.name, e.target.value);
+		this.setState({ user })
 	}
+
   onSubmit = (e) => {
     console.log('click?');
 		e.preventDefault()
-		console.log(JSON.stringify(this.state.form));
-		this.auth.login(this.state.form.email,this.state.form.password)
-		.then(json => {
-			console.log("Got to second then:", json)
-			if(json.errors) {
-				this.setState({
-					errors: json.errors
-				})
-			}
-			this.setState({
-				registerSuccess: true
-			})
-		})
+	  this.auth.login(this.state)
+    .then(res => {
+      this.setState({
+        submitsuccess:true
+      })
+    })
 	}
 
   render(){
-    console.log(this.auth.loggedIn())
-    console.log(this.auth.getToken())
-    console.log(this.state.loggedoutsuccess);
-    console.log(this.state.form);
+    let {email, password} = this.state.user
+    console.log(this.auth.loggedIn());
     let area
-    if(this.auth.loggedIn()){
-      area= <button onClick={this.logout.bind(this)}> log out</button>
-    }
-    else{
-      area= ""
-    }
+      if(this.auth.loggedIn()){
+        area= <button onClick={this.logout}> log out</button>
+      }
+      else{
+        area= <form onSubmit={this.onSubmit}>
+          <input
+            type="email"
+            name="email"
+            value={email}
+            onChange={this.onChange}
+          />
+          {this.state.errors.email && <div>Error: Email  {this.state.errors.email[0]}</div>}
+          <input
+            type="password"
+            name="password"
+            value={password}
+            onChange={this.onChange}
+          />
+          {this.state.errors.password && <div>Error: Password  {this.state.errors.password[0]}</div>}
+          <button>Log in</button>
+        </form>
+      }
+
+      console.log(this.auth.getToken())
     return(
       <div>
-        <p>{this.auth.loggedIn()?"logged in":"logged out"}</p>
-
-        <form onSubmit={this.login}>
-        <input
-          type="email"
-          name="email"
-          value={this.state.form.email}
-          onChange={this.onChange}
-        />
-        {this.state.errors.email && <div>Error: Email  {this.state.errors.email[0]}</div>}
-        <input
-          type="password"
-          name="password"
-          value={this.state.form.password}
-          onChange={this.onChange}
-        />
-        {this.state.errors.password && <div>Error: Password  {this.state.errors.password[0]}</div>}
-        <button onSubmit={this.onSubmit}>Register</button>
-      </form>
-
+        {area}
       </div>
     )
   }
 }
 export default Landing
 
-// {this.state.formsubmitsuccess && <Redirect to="/" />}
-// {area}
+// console.log(this.auth.loggedIn())
+// {this.auth.loggedIn() && <Redirect to="/" />}
 // {this.state.loggedoutsuccess&&<Redirect to="/" />}

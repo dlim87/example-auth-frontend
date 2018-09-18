@@ -12,6 +12,7 @@ class App extends Component {
 		let auth=new AuthService()
 		return (
 			<div>
+				<Landing className="Header" />
 				<Router>
 				<Switch>
 					{(auth.loggedIn())?

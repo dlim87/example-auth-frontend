@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Redirect, Link } from 'react-router-dom'
+import { Redirect } from 'react-router-dom'
 
 import AuthService from '../services'
 
@@ -11,14 +11,12 @@ class RegisterPage extends Component {
 		this.state = {
 			registerSuccess: false,
 			errors: "",
-			form: {
-				user: {
+				form:{ user: {
 					firstName: "test",
 					lastName: "test1",
 					email: "test@example.com",
 					password: "123134",
-				}
-			}
+				}}
 		}
 	}
 
@@ -57,7 +55,7 @@ class RegisterPage extends Component {
 					{this.state.errors.password && <div>Error: Password  {this.state.errors.password[0]}</div>}
 					<button onSubmit={this.onSubmit}>Register</button>
 				</form>
-				{this.state.registerSuccess && <Redirect to="/" />}
+				{this.state.registerSuccess && <Redirect to="/private" />}
 			</main>
 		)
 	}
@@ -72,7 +70,6 @@ class RegisterPage extends Component {
 
 	onSubmit = (e) => {
 		e.preventDefault()
-		console.log(JSON.stringify(this.state.form));
 		this.auth.register(this.state.form)
 		.then(json => {
 			console.log("Got to second then:", json)
